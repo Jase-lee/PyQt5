@@ -57,13 +57,7 @@ sys.exit(app.exec_())
 
 ## 第7章  程序基本结构分析
 
-对上面的部分代码做解析：
-
-### 7.1  sys.argv 
-
-```python
-app = QApplication(sys.argv)
-```
+### 7.1  app = QApplication(sys.argv)
 
 **sys.argv 含义**
 
@@ -98,6 +92,8 @@ print(lst)
 ```
 
 可以看到sys.argv的第一个元素是执行的 py 文件相对于当前工作目录的路径，然后传入什么参数就添加什么参数到该列表中。
+
+
 
 **sys.argv 使用**
 
@@ -137,15 +133,82 @@ Welcome 张三
 您的年龄已能进行投票！
 ```
 
+`app = QApplication(sys.argv)`里面传递 sys.argv 就是在使用应用该程序的时候可以给一整个 QApplication 传递参数。
+
+假如在一个test.py文件中创建`app = QApplication(sys.argv)`，app对象只在当前模块，如果要在其他模块中使用这个app对象该如何做？有两种方法：
+
+- 可以使用 `app.argumnets()`来获取传递的参数。
+
+- 可以使用`qApp.arguments()`来获取
+
+`app = QApplication(sys.argv)`这一整句话的作用就是创建一个应用程序对象。
+
 ------
 
+### 7.2  window = QWidget()
+
 ```
-app = QApplication(sys.argv)
+window = QWidget()
+window.setWindowTitle("XXX管理系统")
+window.resize(500, 500)
+window.move(200, 200)
+
+windows.show()
+```
+
+`window = QWidget()`的作用就是创建一个控件，把它当做一个顶层控件（窗口），来容纳其他的控件。当我们创建一个控件之后，如果这个控件没有父控件，则把它当做顶层控件（窗口），系统会自动的给窗口添加一些装饰（标题栏），窗口控件具备一些特性（设置标题，图标）。
+
+`window.setWindowTitle("XXX管理系统")`设置窗口的标题。
+
+`window.resize(500, 500)`设置窗口的大小，分别是宽度和高度。
+
+`window.move(200, 200)`以下图为例，屏幕左上角的点坐标为（0, 0），这句表示window 窗口相对于该点向右和向下移动200个像素。
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/30fa5417e8eb46818948da51441bc3ee.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA54u4Xw==,size_20,color_FFFFFF,t_70,g_se,x_16#pic_center)
+
+
+
+`window.show()`一个没有父对象的控件默认不显示，必须要调用 show( ) 才可以。
+
+
+
+**QLabel() 标签**
+
+```
+label = QLabel(window)
+label.setText("Hello World")
+label.resize(100,100)
+label.move(200, 200)
+```
+
+使用 QLabel 创建一个 label 标签，在创建的时候指定 window 作为其父控件，所以它就被添加到了window内部。如下：
+
+<img src="https://img2022.cnblogs.com/blog/2056203/202210/2056203-20221020225038600-739578513.png" alt="image-20221020225037508" style="zoom:80%;" />
+
+
+
+假如不指定 window 作为它的父控件，执行代码后这个控件不会显示，除非手动的调用 `label.show()` 才会显示 label 标签，但是它不是在 window 的内部。如下：
+
+```python
+...
+
+label = QLabel()
+label.setText("Hello World")
+label.resize(100,100)
+label.move(200, 200)
+label.show()
+
+window.show()
+...
 ```
 
 
 
-**sys.exit(app.exec_())**
+![image-20221020225221369](https://img2022.cnblogs.com/blog/2056203/202210/2056203-20221020225222397-1850415511.png)
+
+------
+
+### 7.3  sys.exit(app.exec_())
 
 sys模块的exit函数，通过抛出一个SystemExit异常来尝试结束程序，Python代码可以捕获这个异常来进行一些程序退出前的清理工作，也可以不退出程序。sys.exit函数同样可以带一个参数来作为程序的退出码，默认是0。
 
@@ -190,4 +253,14 @@ finally:
 退出码为0被视为“成功终止”，任何非零值被shell等视为“异常终止”。
 
 **sys.exit(app.exec_())**的作用是获取程序的退出状态，看程序是正常退出还是因为内部的bug退出。
+
+
+
+**app.exec_()**
+
+作用就是让整个应用程序开始执行，进入到消息循环（无限循环），检测整个程序所接收到的用户的交互信息。
+
+------
+
+## 第8章  PyCharm活动模板的设置
 
